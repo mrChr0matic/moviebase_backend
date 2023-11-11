@@ -66,7 +66,29 @@ const fetchMovie=asyncHandler(async(req,res)=>{
 
 
 const deleteMovie=asyncHandler(async (req,res)=>{
-    const movie=await prisma.movie.deleteMany();
+    const query=req.query;
+    const movie=await prisma.movie.delete({
+        where:{
+            title: query.title
+        }
+    })
 });
 
-module.exports={addMovie,fetchMovie,deleteMovie};
+const updateMovie=asyncHandler (async (req,res)=>{
+    const title="GOT";
+    const movie=await prisma.movie.update({
+        where:{
+            ISAN:"00000000"
+        },
+        data:{
+            description: "Nine noble families fight for control over the lands of Westeros, while an ancient enemy returns after being dormant for a millennia."
+        }
+    })
+    if(movie)
+        res.send("Success");
+    else
+        res.send("failure");
+});
+
+
+module.exports={addMovie,fetchMovie,deleteMovie,updateMovie};
