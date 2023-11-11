@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userID   String  @id @unique
+  userName String  @unique
+  email    String  @unique
+  password String
+  verified Boolean
+}
+
+model Movie {
+  ISAN         String   @id @unique
+  title        String
+  poster       String
+  trailer      String
+  release_date DateTime
+  description  String
+  userRating   Float
+  adminRating  Float
+  lang         String
+}
+
+model Admin {
+  adminID  String @id @unique
+  email    String @unique
+  password String
+}
+
+model Reviews {
+  userID String
+  ISAN   String
+  Review String
+  Rating Float
+
+  @@id([userID, ISAN])
+  @@unique([userID, ISAN])
+}
+
+model Watchlist {
+  userID String
+  ISAN   String
+
+  @@id([userID, ISAN])
+  @@unique([userID, ISAN])
+}
+
+model History {
+  userID String
+  ISAN   String
+
+  @@id([userID, ISAN])
+  @@unique([userID, ISAN])
+}
+
+model Recommendation {
+  adminID String
+  ISAN    String
+
+  @@id([adminID, ISAN])
+  @@unique([adminID, ISAN])
+}
+
+model Crew {
+  castID   String  @id @unique
+  Name     String
+  Director Boolean
+  Actor    Boolean
+}
+
+model CreatedBy {
+  castID String
+  ISAN   String
+
+  @@id([castID, ISAN])
+  @@unique([castID, ISAN])
+}
