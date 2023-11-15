@@ -36,9 +36,12 @@ const adminLogin=asyncHandler(async (req,res)=>{
 });
 
 const verification=asyncHandler(async(req,res)=>{
-    const query=req.query;
-    const newVal=query.status=="false" ? false:true;
-    const userName=query.userName
+    const body=req.body;
+    if (body.status == undefined || !body.userName) {
+        return res.status(400).json({ message : "you are fucking retarded" })
+    }
+    const newVal=body.status;
+    const userName=body.userName
     const user=await prisma.user.update({
         where:{
             userName:userName
@@ -53,4 +56,4 @@ const verification=asyncHandler(async(req,res)=>{
         res.send("Failure")
 });
 
-module.exports={adminRegister,adminLogin,verification}
+module.exports={ adminRegister,adminLogin,verification}

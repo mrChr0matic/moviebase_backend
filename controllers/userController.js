@@ -4,35 +4,58 @@ const asyncHandler=require('express-async-handler');
 
 const userRegister=asyncHandler(async (req,res)=>{
     const userName="Abishek";
-    const passWord="kehsiba"
+    const password="kehsiba"
     const userID="123456789";
-    const mailID="abisheknair54321@gmail.com";
+    const email="abisheknair54321@gmail.com";
     const verified=false;
     const user=await prisma.user.create({
         data:{
-            userID:userID,
-            userName:userName,
-            email:mailID,
-            password: passWord,
-            verified:verified
+            userID,
+            userName,
+            mailID,
+            password,
+            verified
         }
     });
 });
 
 const userLogin=asyncHandler(async (req,res)=>{
-    const userName="Abishek";
-    const passWord="kiba";
+    const body=req.body;
+    const userName=body.userName;
+    const password=body.password;
+
+    if (!userName || !password) 
+        return res.status(400).json({ "message" : "pottanano"})
 
     const user=await prisma.user.findFirst({
         where:{
-            userName:userName,
-            password: passWord
+            userName,
+            password
         }
     });
     if(user)
-        res.send("Succesfull Login")
+        res.json({ "userId" : user.userID }).statusCode(200)
     else
-        res.send("invalid credentials");
+        res.send("invalid credentials").statusCode(403);
+});
+
+const addReview=asyncHandler(async (req,res)=>{
+    const body=req.body;
+    const userID=body.userID;
+    const isan=body.isan;
+    const review=body.review;
+    const rating=body.rating;
+
+    const reviews=await prisma.reviews.create({
+        data:{
+            userID:userID,
+            ISAN: isan,
+            review: review,
+            rating: rating
+        }
+    });
+
+    await updateUserRating(rating,isan);
 });
 
 module.exports={userRegister,userLogin};

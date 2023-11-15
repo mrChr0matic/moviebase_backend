@@ -35,21 +35,22 @@ const addMovie=asyncHandler(async (req,res)=>{
 });
 
 const fetchMovie=asyncHandler(async(req,res)=>{
+    console.log(req.user)
     const ind=1;
     let whereCondition;
-    const query=req.query;
+    const body=req.body;
     switch (ind) {
         case 1:
-            whereCondition = { title: query.title};
+            whereCondition = { title: body.title};
         break;
         case 2:
-            whereCondition = { lang: query.lang };
+            whereCondition = { lang: body.lang };
         break;
         case 3:
             whereCondition = { ISAN: req.isan };
         break;
         case 4:
-            whereCondition ={OR: [{userRating: query.rating }, {adminRating: query.rating}]};
+            whereCondition ={OR: [{userRating: body.rating }, {adminRating: body.rating}]};
         default:
         throw error ("INVALID");
     }
@@ -66,10 +67,10 @@ const fetchMovie=asyncHandler(async(req,res)=>{
 
 
 const deleteMovie=asyncHandler(async (req,res)=>{
-    const query=req.query;
+    const body=req.body;
     const movie=await prisma.movie.delete({
         where:{
-            title: query.title
+            title: body.title
         }
     })
 });
@@ -90,5 +91,27 @@ const updateMovie=asyncHandler (async (req,res)=>{
         res.send("failure");
 });
 
+const updateReview= async (rating,isan)=>{
+    const tot=await prisma.reviews.count({
+        where:{
+            ISAN:isan
+        }
+    });
+    let oldUserRating=await prisma.movie.findFirst({
+        where:{
+            ISAN:isan
+        }
+    });
+    oldUserRating=oldUserRating.userRating;
+    const newUserRating=(oldUserRating*(tot-1)+rating)/(tot);
+    const movie=await prisma.movie.update({
+        where:{
+            ISAN:isan
+        },
+        data:{
+            userRating:newUserRating,
+        }
+    });
+}
 
 module.exports={addMovie,fetchMovie,deleteMovie,updateMovie};
