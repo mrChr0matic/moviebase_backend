@@ -3,21 +3,34 @@ const {PrismaClient}= require('@prisma/client');
 const prisma = new PrismaClient() ;
 
 const authorize = expressAsyncHandler(async (req, res, next) => {
-    const userID = req.headers.authorization || req.headers.Authroization;
-
-    if (!userID)
+    const auth = req.headers.authorization || req.headers.Authroization; //Authorization : "USER <userId>"
+    if (!auth)
         return res.status(401).json({ "message" : "invalid login creds" })
 
-    const user = await prisma.user.findUnique({
-        where : {
-            userID
-        }
-    })
+    const id = auth.split(" ")[1];
+    const type = auth.split(" ")[0];
 
-    if (!user)
+    let user = null;
+    if (type == "USER") {
+        user = await prisma.user.findUnique({
+            where : {
+                userID : id,
+            }
+        })
+    }
+    else {
+        user = await prisma.admin.findUnique({
+            where : {
+                adminID : id,
+            }
+        })
+    }
+
+    if (!user) 
         return res.status(400).json({ "message" : "user not found"})
 
     req.user = user;
+    req.type = type;
     next()
 })
 

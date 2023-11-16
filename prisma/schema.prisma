@@ -11,76 +11,100 @@ datasource db {
 }
 
 model User {
-  userID   String  @id @unique
-  userName String  @unique
-  email    String  @unique
-  password String
-  verified Boolean
+  userID    String      @id @default(uuid())
+  userName  String      @unique
+  email     String      @unique
+  password  String
+  verified  Boolean
+  Reviews   Reviews[]
+  Watchlist Watchlist[]
+  History   History[]
 }
 
 model Movie {
-  ISAN         String   @id @unique
-  title        String
-  poster       String
-  trailer      String
-  release_date DateTime
-  description  String
-  userRating   Float
-  adminRating  Float
-  lang         String
+  ISAN           String           @id @default(uuid())
+  title          String
+  poster         String
+  trailer        String
+  release_date   DateTime
+  description    String
+  userRating     Float
+  adminRating    Float
+  lang           String
+  searchCount    Int              @default(0)
+  Reviews        Reviews[]
+  Watchlist      Watchlist[]
+  History        History[]
+  Recommendation Recommendation[]
+  CreatedBy      CreatedBy[]
+  Genres         Genre[]
 }
 
 model Admin {
-  adminID  String @id @unique
-  email    String @unique
-  password String
+  adminID        String           @id @default(uuid())
+  email          String           @unique
+  password       String
+  Recommendation Recommendation[]
 }
 
 model Reviews {
   userID String
+  user   User   @relation(fields: [userID], references: [userID])
   ISAN   String
+  movie  Movie  @relation(fields: [ISAN], references: [ISAN])
   Review String
   Rating Float
 
   @@id([userID, ISAN])
-  @@unique([userID, ISAN])
 }
 
 model Watchlist {
   userID String
+  user   User   @relation(fields: [userID], references: [userID])
   ISAN   String
+  movie  Movie  @relation(fields: [ISAN], references: [ISAN])
 
   @@id([userID, ISAN])
-  @@unique([userID, ISAN])
+}
+
+model Genre {
+  genreID Int     @id @default(autoincrement())
+  name    String  @unique
+  Movies  Movie[]
 }
 
 model History {
   userID String
+  user   User   @relation(fields: [userID], references: [userID])
   ISAN   String
+  movie  Movie  @relation(fields: [ISAN], references: [ISAN])
 
   @@id([userID, ISAN])
-  @@unique([userID, ISAN])
 }
 
 model Recommendation {
   adminID String
+  admin   Admin  @relation(fields: [adminID], references: [adminID])
   ISAN    String
+  movie   Movie  @relation(fields: [ISAN], references: [ISAN])
 
   @@id([adminID, ISAN])
-  @@unique([adminID, ISAN])
 }
 
 model Crew {
-  castID   String  @id @unique
-  Name     String
-  Director Boolean
-  Actor    Boolean
+  crewID    String      @id @default(uuid())
+  Name      String
+  Director  Boolean
+  Actor     Boolean
+  createdBy CreatedBy[]
 }
 
 model CreatedBy {
-  castID String
+  crewID String
+  crew   Crew   @relation(fields: [crewID], references: [crewID])
   ISAN   String
+  movie  Movie  @relation(fields: [ISAN], references: [ISAN])
 
-  @@id([castID, ISAN])
-  @@unique([castID, ISAN])
+  @@id([crewID, ISAN])
+  @@unique([crewID, ISAN])
 }
