@@ -14,8 +14,8 @@ app.use(express.static('static'))
 app.use(express.json());
 app.use("/user",userRouter);
 app.use('/admin', adminRouter)
-app.use('/movies', movieRouter)
 app.use(authorize)
+app.use('/movies', movieRouter)
 app.use('/review',reviewRouter)
 
 app.listen(3000,()=>console.log("server started"));
