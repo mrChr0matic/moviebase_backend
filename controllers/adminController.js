@@ -3,57 +3,54 @@ const prisma = new PrismaClient() ;
 const asyncHandler=require('express-async-handler');
 
 const adminRegister=asyncHandler(async(req,res)=>{
-    const adminID="R100";
-    const password="Root";
-    const email="root@gmail.com";
-    
-    const admin=await prisma.admin.create({
-        data:{
-            adminID:adminID,
-            password: password,
-            email: email
-        }
-    });
-    if(admin)
+    try{
+        const body=req.body;
+        const admin=await prisma.admin.create({
+            data:body
+        });
         res.send(admin);
+    }
+    catch(err){
+        res.json(err);
+    }
 });
 
 const adminLogin=asyncHandler(async (req,res)=>{
-    const adminID="R100";
-    const password="Root";
-
-    const admin=await prisma.admin.findFirst({
-        where:{
-            adminID: adminID,
-            password: password
-        }
-    })
-
-    if(admin)
-        res.send(admin);
-    else
-        res.send("failed");
+    try{
+        const body=req.body;
+        const admin=await prisma.admin.findFirst({
+            where:body
+        })
+        res.send({adminID: admin.adminID}).status(200);
+    }
+    catch{
+        res.send({"message" : "noADMIN"}).status(400);
+    }
 });
 
 const verification=asyncHandler(async(req,res)=>{
-    const body=req.body;
-    if (body.status == undefined || !body.userName) {
-        return res.status(400).json({ message : "you are fucking retarded" })
+    try{
+        if(req.type!="ADMIN")
+            return res.send({"error":"NOT_ADMIN"}).status(400);
+        const body=req.body;
+        const user=await prisma.user.update({
+            where:{
+                OR:[
+                    {userID:body.userID},{userName:body.userName}
+                ]
+            },
+            data:{
+                verified: body.val
+            }
+        })
+        if(user)
+            res.send({"verfication" : "failure"});
+        else    
+            res.send({"verification" : "success"})
     }
-    const newVal=body.status;
-    const userName=body.userName
-    const user=await prisma.user.update({
-        where:{
-            userName:userName
-        },
-        data:{
-            verified: newVal
-        }
-    })
-    if(user)
-        res.send("success");
-    else    
-        res.send("Failure")
+    catch{
+        res.send({"verification" : "failure"});
+    }
 });
 
 module.exports={ adminRegister,adminLogin,verification}

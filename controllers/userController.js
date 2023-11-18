@@ -3,44 +3,32 @@ const prisma = new PrismaClient() ;
 const asyncHandler=require('express-async-handler');
 
 const userRegister=asyncHandler(async (req,res)=>{
-    const body=req.body;
-    const userName=body.userName;
-    const password=body.password;
-    const userID=body.userID;
-    const email=body.email;
-    console.log(email);
-    const verified=false;
-    const user=await prisma.user.create({
-        data:{
-            userID,
-            userName,
-            email,
-            password,
-            verified
-        }
-    });
+    try{
+        const body=req.body;
+        body.verified=false;
+        const user=await prisma.user.create({
+            data:body
+        });
+        res.send({"userID": body.userID}).status(200);
+    }
+    catch(err){
+        req.json({err}).status(400);
+    }
 });
 
 const userLogin=asyncHandler(async (req,res)=>{
-    const body=req.body;
-    const userName=body.userName;
-    const password=body.password;
-
-    if (!userName || !password) 
-        return res.status(400).json({ "message" : "empty fields"})
-
-    const user=await prisma.user.findFirst({
-        where:{
-            userName,
-            password
-        }
-    });
-    if(user)
-        res.json({ "userId" : user.userID }).statusCode(200)
-    else
-        res.send("invalid credentials").statusCode(403);
+    try{
+        const body=req.body;
+        if (!body.userName || !body.password) 
+            return res.status(400).json({ "message" : "empty_fields"})
+        const user=await prisma.user.findFirst({
+            where:body
+        });
+        res.json({ "userID" : user.userID }).statusCode(200)
+    }
+    catch{
+        res.send({"message":"invalid_credentials"}).status(400);
+    }
 });
-
-
 
 module.exports={userRegister,userLogin};
