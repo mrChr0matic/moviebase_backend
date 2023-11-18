@@ -43,7 +43,7 @@ const verification=asyncHandler(async(req,res)=>{
                 verified: body.val
             }
         })
-        if(user)
+        if(!user)
             res.send({"verfication" : "failure"});
         else    
             res.send({"verification" : "success"})
