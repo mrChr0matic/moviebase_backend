@@ -11,7 +11,7 @@ const adminRegister=asyncHandler(async(req,res)=>{
         res.send(admin);
     }
     catch(err){
-        res.json(err);
+        res.json({"error":"error"}).status(400);
     }
 });
 

@@ -9,7 +9,7 @@ const reviewRouter = require('./routes/reviewRoutes');
 const genreRouter = require('./routes/genreRoutes');
 const editorsRouter = require('./routes/editorsRoutes');
 
-app.use(cors());
+app.use(cors({ origin : "*" }));
 app.use(logger)
 app.use(express.static('static'))
 app.use(express.json());
