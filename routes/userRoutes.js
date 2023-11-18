@@ -5,7 +5,7 @@ const { addToWatchlist, deleteFromWatchlist, getWatchList } = require('../contro
 const authorize = require('../middleware/auth');
 
 userRouter.route('/register').post(userRegister);
-userRouter.route('/login').get(userLogin);
+userRouter.route('/login').post(userLogin);
 
 userRouter.use(authorize);
 userRouter.route('/watchlist')

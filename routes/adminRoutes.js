@@ -3,7 +3,7 @@ const {adminRegister,adminLogin,verification}=require('../controllers/adminContr
 const authorize = require('../middleware/auth')
 
 adminRouter.route('/register').post(adminRegister);
-adminRouter.route('/login').get(adminLogin);
+adminRouter.route('/login').post(adminLogin);
 
 adminRouter.use(authorize)
 adminRouter.route('/verify').put(verification);
