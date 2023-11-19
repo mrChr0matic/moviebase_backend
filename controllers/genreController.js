@@ -2,6 +2,7 @@ const {PrismaClient}= require('@prisma/client');
 const { generateKey } = require('crypto');
 const prisma = new PrismaClient() ;
 const asyncHandler=require('express-async-handler');
+const { getMovie } = require('./movieController');
 
 const getGenreList=asyncHandler(async (req,res)=>{
     try{
@@ -41,10 +42,8 @@ const getGenreList=asyncHandler(async (req,res)=>{
             });
             let response = [];
             for (let genre of genreList) {
-                console.log(genre.Movies)
                 response = response.concat(genre.Movies)
             }
-            console.log(genreList);
             res.send(response).status(200);
         }
     }

@@ -31,7 +31,7 @@ const searchByCast=asyncHandler(async (req,res)=>{
             }
         });
         crewID=crewID.crewID;
-        const movie=await prisma.createdBy.findMany({
+        let movie=await prisma.createdBy.findMany({
             where: {
                 crewID
             },
@@ -49,9 +49,15 @@ const searchByCast=asyncHandler(async (req,res)=>{
                         lang:true,
                         Reviews: {
                             select : {
+                                user:{
+                                    select:{
+                                        userID:true,
+                                        verified: true
+                                    }
+                                },
                                 Review : true,
                                 Rating : true,
-                            }
+                            },
                         },
                         Genres: {
                             select : {
@@ -71,16 +77,14 @@ const searchByCast=asyncHandler(async (req,res)=>{
                 }
             }
         });
-        const Movies=[];
         let createdBy=[];
         for(let mv of movie){
-                for(let created of mv.movie.CreatedBy){
-                    createdBy.push(created.crew.Name);
-                }
-                mv.movie.CreatedBy=createdBy;
-            Movies.push(mv);
+            createdBy.push(mv.movie);
         }
-        res.send(Movies);
+        movie=createdBy;
+        for(let mv of movie)
+            mv.Reviews.sort((a, b) => (b.user.verified ? 1 : -1));
+        res.send(movie).status(200);
     }
     catch(err){
         console.log(err);

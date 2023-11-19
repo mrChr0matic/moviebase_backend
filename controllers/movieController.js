@@ -7,7 +7,6 @@ const { error } = require('console');
 
 const addMovie = asyncHandler(async (req, res) => {
     let data = req.body;
-    console.log(req)
     try{
         const genres = data.Genres || [];
         delete data.Genres;
@@ -66,9 +65,15 @@ const fetchMovie=asyncHandler(async(req,res)=>{
             lang:true,
             Reviews: {
                 select : {
+                    user:{
+                        select:{
+                            userID:true,
+                            verified: true
+                        }
+                    },
                     Review : true,
                     Rating : true,
-                }
+                },
             },
             Genres: {
                 select : {
@@ -93,6 +98,8 @@ const fetchMovie=asyncHandler(async(req,res)=>{
         }
         mv.CreatedBy=createdBy;
     }
+    for(let mv of movie)
+        mv.Reviews.sort((a, b) => (b.user.verified ? 1 : -1));
     res.send(movie).status(200);
 });
 
@@ -202,17 +209,37 @@ const getMovie = asyncHandler(async (req, res) => {
                 lang:true,
                 Reviews: {
                     select : {
+                        user:{
+                            select:{
+                                userID:true,
+                                verified: true
+                            }
+                        },
                         Review : true,
                         Rating : true,
-                    }
+                    },
                 },
                 Genres: {
                     select : {
                         name : true,
                     }
                 },
+                CreatedBy:{
+                    select:{
+                        crew:{
+                            select:{
+                                Name:true
+                            }
+                        }
+                    }
+                },
             },
         })
+        let createdBy=[];
+        for(let mv of movie.CreatedBy)
+            createdBy.push(mv.crew.Name);
+        movie.CreatedBy=createdBy;
+        movie.Reviews.sort((a, b) => (b.user.verified ? 1 : -1));
         res.json(movie).status(200);
     }
     catch(error) {

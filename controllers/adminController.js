@@ -33,22 +33,19 @@ const verification=asyncHandler(async(req,res)=>{
         if(req.type!="ADMIN")
             return res.send({"error":"NOT_ADMIN"}).status(400);
         const body=req.body;
+        console.log(body);
         const user=await prisma.user.update({
             where:{
-                OR:[
-                    {userID:body.userID},{userName:body.userName}
-                ]
+                userName:body.userName
             },
             data:{
                 verified: body.val
             }
         })
-        if(!user)
-            res.send({"verfication" : "failure"});
-        else    
-            res.send({"verification" : "success"})
+        res.send({"verfication" : "success"});
     }
-    catch{
+    catch(err){
+        console.log(err);
         res.send({"verification" : "failure"});
     }
 });

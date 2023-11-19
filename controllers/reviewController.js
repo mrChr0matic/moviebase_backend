@@ -19,6 +19,7 @@ const addReview=asyncHandler(async (req,res)=>{
         res.send({"status": "added review"});
     }
     catch(error){
+        console.log(error);
         res.json(error)
     }
 });
