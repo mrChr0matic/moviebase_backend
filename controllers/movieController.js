@@ -107,7 +107,6 @@ const fetchMovie=asyncHandler(async(req,res)=>{
 const getCustomMovie=asyncHandler(async(req,res)=>{
     try{
         const body=req.body.type;
-        console.log(req.body.type);
         const movie=await prisma.movie.findMany({
             orderBy:body,
             select:{

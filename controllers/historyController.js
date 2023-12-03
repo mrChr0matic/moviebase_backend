@@ -26,9 +26,12 @@ const viewHistory=asyncHandler(async (req,res)=>{
     const history=await prisma.history.findMany({
         where:{
             userID: req.user.userID
+        },
+        include:{
+            movie:true
         }
     })
-    res.send({"history":history}).status(200);
+    res.send(history).status(200);
 });
 
 module.exports={addHistory,viewHistory};
