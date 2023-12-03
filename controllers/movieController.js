@@ -39,6 +39,7 @@ const addMovie = asyncHandler(async (req, res) => {
         return res.send({ISAN: movie.ISAN});
     }
     catch(error){
+        console.log(error);
         res.send({status:"error"});
     }
 });
