@@ -20,4 +20,4 @@ app.use('/movies', movieRouter)
 app.use('/review',reviewRouter)
 app.use('/editors',editorsRouter)
 
-app.listen(3000,()=>console.log("server started"));
+app.listen(5000,()=>console.log("server started"));
