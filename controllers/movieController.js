@@ -68,7 +68,7 @@ const fetchMovie=asyncHandler(async(req,res)=>{
                 select : {
                     user:{
                         select:{
-                            userID:true,
+                            userName:true,
                             verified: true
                         }
                     },
@@ -107,6 +107,7 @@ const fetchMovie=asyncHandler(async(req,res)=>{
 const getCustomMovie=asyncHandler(async(req,res)=>{
     try{
         const body=req.body.type;
+        console.log(req.body.type);
         const movie=await prisma.movie.findMany({
             orderBy:body,
             select:{
@@ -152,8 +153,8 @@ const updateMovie=asyncHandler (async (req,res)=>{
             return res.status(401).json({ "error": "NOT_ADMIN" });
         }
         const body=req.body;
-        const ISAN=req.ISAN;
-        delete body.req_title;
+        const ISAN=body.ISAN;
+        delete body.ISAN;
         const movie=await prisma.movie.update({
             where:{
                 ISAN:ISAN
@@ -166,6 +167,7 @@ const updateMovie=asyncHandler (async (req,res)=>{
         res.send(movie);
     }
     catch (error) {
+        console.log(error);
         res.json({"error":"ERROR"}).status(400);
     }
 });
@@ -221,7 +223,7 @@ const getMovie = asyncHandler(async (req, res) => {
                     select : {
                         user:{
                             select:{
-                                userID:true,
+                                userName:true,
                                 verified: true
                             }
                         },
