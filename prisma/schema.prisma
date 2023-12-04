@@ -74,10 +74,11 @@ model Genre {
 }
 
 model History {
-  userID String
-  user   User   @relation(fields: [userID], references: [userID])
-  ISAN   String
-  movie  Movie  @relation(fields: [ISAN], references: [ISAN])
+  userID     String
+  user       User     @relation(fields: [userID], references: [userID])
+  ISAN       String
+  movie      Movie    @relation(fields: [ISAN], references: [ISAN])
+  lastAccess DateTime
 
   @@id([userID, ISAN])
 }

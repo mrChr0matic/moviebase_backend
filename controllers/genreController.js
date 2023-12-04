@@ -32,12 +32,7 @@ const getGenreList=asyncHandler(async (req,res)=>{
             genreList= await prisma.genre.findMany({
                 where:body,
                 select:{
-                    Movies:{
-                        select:{
-                            ISAN: true,
-                            title: true
-                        }
-                    }
+                    Movies:true
                 }
             });
             let response = [];
@@ -49,7 +44,7 @@ const getGenreList=asyncHandler(async (req,res)=>{
     }
     catch(err){
         console.log(err)
-        res.json({"message": "error"}).status(400);
+        res.status(400).json({"message": "error"});
     }
 })
 

@@ -11,7 +11,7 @@ const adminRegister=asyncHandler(async(req,res)=>{
         res.send(admin);
     }
     catch(err){
-        res.json({"error":"error"}).status(400);
+        res.status(400).json({"error":"error"});
     }
 });
 
@@ -21,10 +21,12 @@ const adminLogin=asyncHandler(async (req,res)=>{
         const admin=await prisma.admin.findFirst({
             where:body
         })
-        res.send({adminID: admin.adminID}).status(200);
+        return res.json({adminID: admin.adminID}).status(200);
     }
     catch{
-        res.send({"message" : "noADMIN"}).status(400);
+        return res.status(400).json({"message" : "noADMIN"});
+        // res.status(400)
+        // throw new Error({"message" : "noADMIN"})
     }
 });
 
@@ -46,7 +48,7 @@ const verification=asyncHandler(async(req,res)=>{
     }
     catch(err){
         console.log(err);
-        res.send({"verification" : "failure"});
+        res.status(400).send({"verification" : "failure"});
     }
 });
 

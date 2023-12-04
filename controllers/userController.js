@@ -12,7 +12,7 @@ const userRegister=asyncHandler(async (req,res)=>{
         res.send({"userID": body.userID}).status(200);
     }
     catch(err){
-        req.json({err}).status(400);
+        req.status(400).json({err});
     }
 });
 
@@ -27,7 +27,7 @@ const userLogin=asyncHandler(async (req,res)=>{
         res.json({ "userID" : user.userID }).statusCode(200)
     }
     catch{
-        res.send({"message":"invalid_credentials"}).status(400);
+        res.status(400).send({"message":"invalid_credentials"});
     }
 });
 

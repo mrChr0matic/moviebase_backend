@@ -167,7 +167,7 @@ const updateMovie=asyncHandler (async (req,res)=>{
     }
     catch (error) {
         console.log(error);
-        res.json({"error":"ERROR"}).status(400);
+        res.status(400).json({"error":"ERROR"});
     }
 });
 
@@ -254,7 +254,7 @@ const getMovie = asyncHandler(async (req, res) => {
         res.json(movie).status(200);
     }
     catch(error) {
-        res.json(error).status(400);
+        res.status(400).json(error);
     }
 })
 

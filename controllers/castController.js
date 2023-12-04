@@ -88,7 +88,7 @@ const searchByCast=asyncHandler(async (req,res)=>{
     }
     catch(err){
         console.log(err);
-        res.send({"error":"error"}).status(400);
+        res.status(400).send({"error":"error"});
     }
 });
 

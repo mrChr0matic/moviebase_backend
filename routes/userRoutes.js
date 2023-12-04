@@ -1,5 +1,5 @@
 const userRouter=require('express').Router();
-const { addHistory, viewHistory } = require('../controllers/historyController');
+const { addHistory, viewHistory, deleteHistory } = require('../controllers/historyController');
 const {userRegister,userLogin}=require('../controllers/userController');
 const { addToWatchlist, deleteFromWatchlist, getWatchList } = require('../controllers/watchlistController');
 const authorize = require('../middleware/auth');
@@ -16,5 +16,6 @@ userRouter.route('/watchlist')
 userRouter.route('/history')
     .post(addHistory)
     .get(viewHistory)
+    .delete(deleteHistory)
     
 module.exports=userRouter;

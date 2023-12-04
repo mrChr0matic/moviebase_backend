@@ -11,7 +11,7 @@ const addEditorsChoice=asyncHandler(async (req,res)=>{
         res.send({"message":"watchlist_added"}).status(200);
     }
     catch{
-        res.send({"message": "watchlist_add_failed"});
+        res.status(400).send({"message": "watchlist_add_failed"});
     }
 });
 
@@ -26,7 +26,7 @@ const deleteEditorsChoice=asyncHandler(async (req,res)=>{
         res.send({ "message":"editors_delete_success" }).status(200);
     }
     catch{
-        res.send({ "message":"editors_delete_failed" });
+        res.status(400).send({ "message":"editors_delete_failed" });
     }
 });
 

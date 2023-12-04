@@ -15,15 +15,15 @@ const addHistory=asyncHandler(async (req,res)=>{
         res.send({message:"addedHistory"}).status(200);
     }
     catch{
-        res.send({message:"errorHistoryAdd"}).status(400);
+        res.status(400).send({message:"errorHistoryAdd"});
     }
 });
 
 const viewHistory=asyncHandler(async (req,res)=>{
     if(req.type!="USER"){
-        return res.send({message:"loginNeeded"}).status(400);
+        return res.status(400).send({message:"loginNeeded"});
     }
-    const history=await prisma.history.findMany({
+    let history=await prisma.history.findMany({
         where:{
             userID: req.user.userID
         },
@@ -31,7 +31,22 @@ const viewHistory=asyncHandler(async (req,res)=>{
             movie:true
         }
     })
+    let temp=[];
+    for(let i=0;i<history.length;i++)
+        temp.push(history[i].movie);
+    history=temp;
     res.send(history).status(200);
 });
 
-module.exports={addHistory,viewHistory};
+const deleteHistory=asyncHandler(async (req,res)=>{
+    if(req.type!="USER")
+        return res.status(400).send({"message":"login_needed"});
+    let history=await prisma.history.deleteMany({
+        where:{
+            userID:req.user.userID
+        }
+    })
+    return res.status(200).send({"message":"delete_success"});
+})
+
+module.exports={addHistory,viewHistory,deleteHistory};

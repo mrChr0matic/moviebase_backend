@@ -15,7 +15,7 @@ const addToWatchlist=asyncHandler(async (req,res)=>{
         res.send({"message":"addedWatchlist"}).status(200);
     }
     catch(err){
-        res.send({"message":"errorWatchlist"});
+        res.status(400).send({"message":"errorWatchlist"});
     }
 });
 
@@ -32,7 +32,7 @@ const deleteFromWatchlist = asyncHandler(async (req,res)=>{
         res.send({"message":"deletedWatchlist"});
     }
     catch(error){
-        res.send({"message":"errorDeleteWatchlist"});
+        res.status(400).send({"message":"errorDeleteWatchlist"});
     }
 });
 
@@ -43,22 +43,21 @@ const getWatchList= asyncHandler(async (req,res)=>{
         if(req.type!="USER"){
             return res.send([]);
         }
-        const watchlist= await prisma.watchlist.findMany({
+        let watchlist= await prisma.watchlist.findMany({
             where: body,
             select:{
                 ISAN: false,
-                movie:{
-                    select:{
-                        ISAN:true,
-                        title:true
-                    }
-                }
+                movie:true
             }
         });
+        let temp=[];
+        for(let i=0;i<watchlist.length;i++)
+            temp.push(watchlist[i].movie);
+        watchlist=temp;
         res.send(watchlist).status(200);
     }
     catch{
-        res.send([]);
+        res.status(400).send([]);
     }
 });
 
