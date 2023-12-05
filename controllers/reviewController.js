@@ -16,11 +16,11 @@ const addReview=asyncHandler(async (req,res)=>{
         });
         const update= await updateReview(body.ISAN,body.Rating);
         console.log(update);
-        res.send({"status": "added review"});
+        res.send({"status": "added_review"});
     }
     catch(error){
         console.log(error);
-        res.status(400).json(error)
+        res.status(400).json({"status": "error_adding_review"})
     }
 });
 

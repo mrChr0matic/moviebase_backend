@@ -31,11 +31,15 @@ const deleteEditorsChoice=asyncHandler(async (req,res)=>{
 });
 
 const getEditorsChoice=asyncHandler(async (req,res)=>{
-    const recommendation=await prisma.recommendation.findMany({
+    let recommendation=await prisma.recommendation.findMany({
         select:{
             movie:true
         }
     });
+    let temp=[];
+    for(let i=0;i<recommendation.length;i++)
+        temp.push(recommendation[i].movie);
+    recommendation=temp;
     res.send(recommendation);
 });
 

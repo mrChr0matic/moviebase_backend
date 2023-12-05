@@ -9,13 +9,39 @@ const addHistory=asyncHandler(async (req,res)=>{
         }
         const body=req.body;
         body.userID=req.user.userID;
-        const history=await prisma.history.create({
-            data: body
-        });
-        res.send({message:"addedHistory"}).status(200);
+        const oldHistory= await prisma.history.findFirst({
+            where:body,
+        })
+        const d=new Date();
+        const timestamp = d.getTime();
+        const date = new Date(timestamp);
+        const formattedDate = date.toISOString();
+        if(oldHistory){
+            const updateHistory=await prisma.history.update({
+                where:{
+                    userID_ISAN: {
+                        userID: req.user.userID,
+                        ISAN: body.ISAN,
+                    },
+                },
+                data:{
+                    lastAccess: d
+                }
+            })
+        }
+        else{
+            const history=await prisma.history.create({
+                data:{
+                    ...body,
+                    lastAccess: formattedDate,
+                }
+            })
+        }
+        return res.send({message:"addedHistory"}).status(200);
     }
-    catch{
-        res.status(400).send({message:"errorHistoryAdd"});
+    catch(error){
+        console.log(error)
+        return res.status(400).send({message:"errorHistoryAdd"});
     }
 });
 
@@ -29,6 +55,9 @@ const viewHistory=asyncHandler(async (req,res)=>{
         },
         include:{
             movie:true
+        },
+        orderBy:{
+            lastAccess: 'desc'
         }
     })
     let temp=[];

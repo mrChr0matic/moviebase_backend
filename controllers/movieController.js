@@ -91,6 +91,7 @@ const fetchMovie=asyncHandler(async(req,res)=>{
                 }
             }
         },
+        take: 15
     });
     let createdBy=[];
     for(let mv of movie){
@@ -121,7 +122,8 @@ const getCustomMovie=asyncHandler(async(req,res)=>{
                         name : true,
                     }
                 },
-            }
+            },
+            take: 15
         });
         res.send(movie).status(200);
     }
@@ -141,8 +143,9 @@ const deleteMovie=asyncHandler(async (req,res)=>{
         })
         return res.send({"status":"deleted_movies"});
     }
-    catch{
-        return res.send({"status": "couldnt_delete"});
+    catch(err){
+        console.log(err);
+        return res.status(400).send({"status": "couldnt_delete"});
     }
 });
 

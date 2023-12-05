@@ -9,10 +9,11 @@ const userRegister=asyncHandler(async (req,res)=>{
         const user=await prisma.user.create({
             data:body
         });
-        res.send({"userID": body.userID}).status(200);
+        res.send({"userID": user.userID}).status(200);
     }
     catch(err){
-        req.status(400).json({err});
+        console.log(err)
+        res.status(400).json({err});
     }
 });
 
